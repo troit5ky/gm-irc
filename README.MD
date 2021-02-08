@@ -1,7 +1,7 @@
-###gm-irc
+## gm-irc
 IRC Discord < == > Garrys Mod
 
-###HOW-TO
+## HOW-TO
 - Configure addon (messageSend.lua)
 - Push to garrysmod/addons/
 - Start webserver
