@@ -2,7 +2,7 @@
 IRC Discord < == > Garrys Mod
 
 ## HOW-TO
-- Configure addon (messageSend.lua)
+- Configure addon (sh_config.lua)
 - Push to garrysmod/addons/
 - Start webserver
 - Configure webserver
