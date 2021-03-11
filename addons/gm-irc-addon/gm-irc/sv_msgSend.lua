@@ -44,7 +44,7 @@ end
 
 function playerConnect(ply, ip)
 	local embed = {
-		title = "Игрок " .. ply:GetName() .." (".. ply:SteamID() .. ") инициировал подключение",
+		title = "Игрок " .. ply .. " инициировал подключение",
 		color = 16763979
 	}
 
