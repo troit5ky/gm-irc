@@ -3,9 +3,9 @@ package main
 import (
 	"log"
 
-	"./bot"
-	"./config"
-	"./webserver"
+	"webserver-go/bot"
+	"webserver-go/config"
+	"webserver-go/webserver"
 )
 
 func main() {

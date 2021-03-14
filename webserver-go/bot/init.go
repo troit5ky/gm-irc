@@ -3,7 +3,8 @@ package bot
 import (
 	"log"
 
-	"../config"
+	"webserver-go/config"
+
 	"github.com/bwmarrin/discordgo"
 )
 

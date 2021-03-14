@@ -1,7 +1,11 @@
-GM_IRC = {}
-
 if SERVER then 
-	include( "sh_config.lua" )
+	GM_IRC = {}
+	include( "sv_config.lua" )
+
+	util.AddNetworkString( "GM_netcfg" )
+	net.Start( "GM_netcfg" )
+		net.WriteTable( GM_IRC )
+	net.Broadcast()
 
 	include( "gm-irc/sv_msgGet.lua" )
 	include( "gm-irc/sv_msgSend.lua" )
@@ -15,6 +19,8 @@ if SERVER then
 end
 
 if CLIENT then 
-	include( "sh_config.lua" )
+	GM_IRC = {}
+	net.Receive("GM_netcfg", function () GM_IRC = net.ReadTable() end)
+
 	include( "gm-irc/cl_msgRecive.lua" )
 end

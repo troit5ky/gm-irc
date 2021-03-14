@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	"../bot"
+	"webserver-go/bot"
 )
 
 type (

@@ -2,7 +2,6 @@ package config
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"log"
 	"os"
 )
@@ -26,32 +25,17 @@ var (
 func Init() {
 	defer log.Println("Init config finished!")
 
-	a, err := ioutil.ReadFile("config/bot.json")
-
+	file, err := os.ReadFile("bot.json")
 	if err != nil {
-		CreateExample()
+		example, _ := json.MarshalIndent(OptionStruct{"your_token", "listen_channel_id"}, "    ", "    ")
+		os.WriteFile("bot.json", example, 0644)
 		log.Println("Change config/bot.json")
-		return
+		os.Exit(0)
 	}
 
-	err = json.Unmarshal(a, &Option)
+	err = json.Unmarshal(file, &Option)
 
 	if err != nil {
 		log.Panic(err)
 	}
-}
-
-func CreateExample() {
-	err := os.Mkdir("config", 0755)
-	if err != nil {
-		log.Println(err)
-	}
-
-	a, err := json.MarshalIndent(Option_Example, " ", " ")
-	if err != nil {
-		log.Println(err)
-	}
-
-	ioutil.WriteFile("config/bot.json", a, 0644)
-	ioutil.WriteFile("config/bot_example.json", a, 0644)
 }
