@@ -1,17 +1,12 @@
-if SERVER then 
-	GM_IRC = {}
-	include( "sv_config.lua" )
+GM_IRC = {}
 
-	util.AddNetworkString( "GM_netcfg" )
-	net.Start( "GM_netcfg" )
-		net.WriteTable( GM_IRC )
-	net.Broadcast()
+if SERVER then 
+	include( "sv_config.lua" )
 
 	include( "gm-irc/sv_msgGet.lua" )
 	include( "gm-irc/sv_msgSend.lua" )
 
 	AddCSLuaFile( "gm-irc/cl_msgRecive.lua" )
-	AddCSLuaFile( "sh_config.lua" )
 
 	print( "------------------\n" )
 	print( "GM-IRC LOADED!\n" )
@@ -19,8 +14,5 @@ if SERVER then
 end
 
 if CLIENT then 
-	GM_IRC = {}
-	net.Receive("GM_netcfg", function () GM_IRC = net.ReadTable() end)
-
 	include( "gm-irc/cl_msgRecive.lua" )
 end

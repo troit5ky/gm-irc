@@ -14,6 +14,7 @@ function poll()
 							print(GM_IRC.ChatPrefix .. " " .. msgtble[i].author .. ": " .. msgtble[i].content)
 
 							net.Start("SendMsg")
+							msgtble[i].pref = GM_IRC.ChatPrefix .. " "
 							net.WriteTable(msgtble[i])
 							net.Broadcast()
 
