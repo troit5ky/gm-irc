@@ -29,7 +29,7 @@ func Init() {
 	if err != nil {
 		example, _ := json.MarshalIndent(OptionStruct{"your_token", "listen_channel_id"}, "    ", "    ")
 		os.WriteFile("bot.json", example, 0644)
-		log.Println("Change config/bot.json")
+		log.Println("Change bot.json")
 		os.Exit(0)
 	}
 
