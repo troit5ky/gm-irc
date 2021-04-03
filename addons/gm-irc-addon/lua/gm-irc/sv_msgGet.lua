@@ -6,10 +6,10 @@ function poll()
 		function(body, size, headers, code)
 			local msgtble = util.JSONToTable(tostring(body))
 
-			for ( i = 1, table.getn(msgtble) ) do 
+			for i = 1, table.getn(msgtble) do 
 				if ( msgtble[i].author != "BOT" ) then 
 					if ( msgtble[i].timestamp+GM_IRC.GetmsgsDelay > os.time() - .5 ) then
-						if ( !IsValid( msgtble[i].isPrinted ) or !msgtble[i].isPrinted ) then
+						if ( !IsValid(msgtble[i].isPrinted) or !msgtble[i].isPrinted ) then
 							print(GM_IRC.ChatPrefix .. " " .. msgtble[i].author .. ": " .. msgtble[i].content)
 
 							net.Start("SendMsg")

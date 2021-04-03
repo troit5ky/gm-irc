@@ -25,7 +25,7 @@ function sendPost(sender, text)
 		sendMsgToDiscord( json )
 	end, { } )
 	
-	return text
+	return
 end
 
 function playerSpawnForTheFirstTime(ply, transit)
