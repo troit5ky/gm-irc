@@ -1,24 +1,28 @@
 util.AddNetworkString("SendMsg")
 
+local printed = {}
+
 function poll()
 	http.Fetch(
 		GM_IRC.WebserverAdress .. '/getmsghistory',
 		function(body, size, headers, code)
 			local msgtble = util.JSONToTable(tostring(body))
 
-			for i = 1, table.getn(msgtble) do 
-				if ( msgtble[i].author != "BOT" ) then 
-					if ( msgtble[i].timestamp+GM_IRC.GetmsgsDelay > os.time() - .5 ) then
-						if ( !IsValid(msgtble[i].isPrinted) or !msgtble[i].isPrinted ) then
-							print(GM_IRC.ChatPrefix .. " " .. msgtble[i].author .. ": " .. msgtble[i].content)
-
-							net.Start("SendMsg")
-							msgtble[i].pref = GM_IRC.ChatPrefix .. " "
-							net.WriteTable(msgtble[i])
-							net.Broadcast()
-
-							msgtble[i].isPrinted = true
+			for i, msg in ipairs(msgtble) do
+				if ( msg.author != "BOT" ) then 
+					if (os.time() < msg.timestamp+(GM_IRC.GetmsgsDelay+2)) then
+						for i,k in ipairs(printed) do
+							if ( msg.content == k.content ) then return end
 						end
+						print(GM_IRC.ChatPrefix .. " " .. msg.author .. ": " .. msg.content)
+
+						net.Start("SendMsg")
+						msg.pref = GM_IRC.ChatPrefix .. " "
+						net.WriteTable(msg)
+						net.Broadcast()
+
+						if ( table.getn(printed) ) == 10 then table.remove(printed, 1) end
+						table.insert(printed, msg)
 					end
 				end
 			end
@@ -26,7 +30,7 @@ function poll()
 		end,
 			
 		function( err )
-			print( err )
+			print( "FAILED GET: " .. err )
 		end
 	)
 end
