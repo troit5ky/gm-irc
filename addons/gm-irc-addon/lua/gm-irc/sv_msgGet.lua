@@ -10,7 +10,7 @@ function poll()
 
 			for i, msg in ipairs(msgtble) do
 				if ( msg.author != "BOT" ) then 
-					if (os.time() < msg.timestamp+(GM_IRC.GetmsgsDelay+2)) then
+					if (os.time()-10 < msg.timestamp+GM_IRC.GetmsgsDelay+30) then
 						for i,k in ipairs(printed) do
 							if ( msg.content == k.content ) then return end
 						end
