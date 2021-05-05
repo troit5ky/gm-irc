@@ -11,6 +11,21 @@ if SERVER then
 	print( "------------------\n" )
 	print( "GM-IRC LOADED!\n" )
 	print( "------------------" )
+
+	hook.Add("Initialize", "irc_serverstarted", function () 
+		local embed = {
+			title = "Сервер снова онлайн!",
+			description = "Подключиться можно по ссылке: steam://connect/" .. game.GetIPAddress(),
+			color = GM_IRC.PlayersCountColor
+		}
+
+		local json = util.TableToJSON ({
+			username = GM_IRC.Username,
+			embeds = { embed }
+		})
+		
+		sendMsgToDiscord( json )
+	end)
 end
 
 if CLIENT then 
