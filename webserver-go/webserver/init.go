@@ -14,6 +14,7 @@ type (
 		Author    string `json:"author"`
 		Content   string `json:"content"`
 		Timestamp int    `json:"timestamp"`
+		IsBot     bool   `json:"isbot"`
 	}
 )
 
@@ -29,13 +30,9 @@ func Init() {
 
 		MsgRawArr := bot.GetMsgHistory()
 		for i, msg := range MsgRawArr {
-			if msg.Author.Bot {
-				msg.Author.Username = "BOT"
-			}
-
 			tsparse, _ := msg.Timestamp.Parse()
 			ts := int(tsparse.Unix())
-			MsgArr[i] = MsgStruct{Author: msg.Author.Username, Content: msg.Content, Timestamp: ts}
+			MsgArr[i] = MsgStruct{Author: msg.Author.Username, Content: msg.Content, Timestamp: ts, IsBot: msg.Author.Bot}
 		}
 
 		Resp, err := json.Marshal(MsgArr)

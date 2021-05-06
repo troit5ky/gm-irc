@@ -9,9 +9,8 @@ function poll()
 			local msgtble = util.JSONToTable(tostring(body))
 
 			for i, msg in ipairs(msgtble) do
-				if ( msg.author == "BOT" ) then return end
-				if (os.time()-10 > msg.timestamp+GM_IRC.GetmsgsDelay+30) then return end
-
+				if ( msg.isbot ) then return end
+				if ( os.time()-10 > msg.timestamp+GM_IRC.GetmsgsDelay+30 ) then return end
 				for i,k in ipairs(printed) do
 					if ( msg.content == k.content ) then return end
 				end
