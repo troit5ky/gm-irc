@@ -14,8 +14,8 @@ if SERVER then
 
 	hook.Add("Initialize", "irc_serverstarted", function () 
 		local embed = {
-			title = "Сервер снова онлайн!",
-			description = "Подключиться можно по ссылке: steam://connect/" .. game.GetIPAddress(),
+			title = "Сервер запущен!",
+			description = "Можешь смело подключаться :)",
 			color = GM_IRC.PlayersCountColor
 		}
 
