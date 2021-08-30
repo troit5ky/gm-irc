@@ -1,8 +1,6 @@
 require("chttp")
 
-function onSucces(body, size, headers, code)
-	print("-------------\nSEND successed\n-------------")
-end
+function onSucces(body, size, headers, code) end
 
 function onFailure(message)
 	print("-------------\nSEND failure\n-------------\n"..message)	
@@ -15,12 +13,11 @@ end
 function sendPost(sender, text)
 	http.Fetch("http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key="..GM_IRC.SteamapiKey.."&steamids="..sender:SteamID64(), 
 		function ( body, length, headers, code  )
-		print("-------------\nSuccessed\n-------------\n".."-------------\n"..code.."\n-------------")
 		local user = util.JSONToTable(body)
 		local json = util.TableToJSON( { username = sender:GetName(), content = text, avatar_url = user.response.players[1].avatarfull } )
 		sendMsgToDiscord( json )
 	end, function ( message )
-		print("-------------\nFailed\n-------------\n".."-------------\n"..message.."\n-------------")
+		print("-------------\nSteam API failed!\n-------------\n".."-------------\n"..message.."\n-------------")
 		local json = util.TableToJSON( { username = sender:GetName(), content = text } )
 		sendMsgToDiscord( json )
 	end, { } )
