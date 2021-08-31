@@ -23,8 +23,8 @@ func Init() {
 	Session = s
 }
 
-func GetMsgHistory() []*discordgo.Message {
-	Msgs, err := Session.ChannelMessages(config.Option.ChID, 10, "", "", "")
+func GetMsgHistory(limit int) []*discordgo.Message {
+	Msgs, err := Session.ChannelMessages(config.Option.ChID, limit, "", "", "")
 	if err != nil {
 		log.Println(err)
 	}

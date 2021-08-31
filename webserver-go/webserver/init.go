@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
+	"strings"
 
 	"webserver-go/bot"
 )
@@ -18,21 +20,31 @@ type (
 	}
 )
 
-var (
-	MsgArr [10]MsgStruct
-)
-
 func Init() {
-	log.Println("Webserver started!")
+	defer log.Println("Webserver started!")
 
 	http.HandleFunc("/getmsghistory", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Add("Content-Type", "application/json")
+		var MsgArr []MsgStruct
+		limit, err := strconv.Atoi(r.URL.Query().Get("limit"))
 
-		MsgRawArr := bot.GetMsgHistory()
-		for i, msg := range MsgRawArr {
+		if err != nil {
+			limit = 10
+		}
+
+		MsgRawArr := bot.GetMsgHistory(limit)
+		for _, msg := range MsgRawArr {
 			tsparse, _ := msg.Timestamp.Parse()
 			ts := int(tsparse.Unix())
-			MsgArr[i] = MsgStruct{Author: msg.Author.Username, Content: msg.Content, Timestamp: ts, IsBot: msg.Author.Bot}
+
+			replacer := strings.NewReplacer("%", "", "\\", "")
+			msg.Content = replacer.Replace(msg.Content)
+
+			if msg.Content == "" {
+				msg.Content = "(вложение)"
+			}
+
+			data := MsgStruct{Author: msg.Author.Username, Content: msg.Content, Timestamp: ts, IsBot: msg.Author.Bot}
+			MsgArr = append(MsgArr, data)
 		}
 
 		Resp, err := json.Marshal(MsgArr)
@@ -40,6 +52,7 @@ func Init() {
 			log.Println(err)
 		}
 
+		w.Header().Add("Content-Type", "application/json")
 		fmt.Fprintf(w, string(Resp))
 	})
 
