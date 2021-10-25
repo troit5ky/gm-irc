@@ -1,28 +1,39 @@
 require("chttp")
 
-function onSucces(body, size, headers, code) end
-
 function onFailure(message)
 	print("-------------\nSEND failure\n-------------\n"..message)	
 end
 
 function sendMsgToDiscord( body )
-	CHTTP( { failed = onFailure, succes = onSucces, method = "POST", url = GM_IRC.WebhookAdress, body = body, type = "application/json" } )
+	CHTTP( { failed = onFailure, succes = nil, method = "POST", url = GM_IRC.WebhookAdress, body = body, type = "application/json" } )
 end
 
 function sendPost(sender, text)
-	http.Fetch("http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key="..GM_IRC.SteamapiKey.."&steamids="..sender:SteamID64(), 
+	http.Fetch(
+		"http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=" .. GM_IRC.SteamapiKey .. "&steamids=" .. sender:SteamID64(), 
+		
 		function ( body, length, headers, code  )
 		local user = util.JSONToTable(body)
-		local json = util.TableToJSON( { username = sender:GetName(), content = text, avatar_url = user.response.players[1].avatarfull } )
+		local avatar = user.response.players[1].avatarfull or nil
+
+		if ( avatar == nil ) then print("-------------\nSTEAM API failure\n-------------\n" .. body) end
+
+		local json = {
+			["username"] = sender:Nick(),
+			["content"] = text,
+			["avatar_url"] = avatar
+		}
+
+		json = util.TableToJSON(json)
 		sendMsgToDiscord( json )
-	end, function ( message )
-		print("-------------\nSteam API failed!\n-------------\n".."-------------\n"..message.."\n-------------")
-		local json = util.TableToJSON( { username = sender:GetName(), content = text } )
-		sendMsgToDiscord( json )
-	end, { } )
+	end, 
 	
-	return
+		function ( message )
+			print("-------------\nSteam API failed!\n-------------\n".."-------------\n"..message.."\n-------------")
+			local json = util.TableToJSON( { username = sender:GetName(), content = text } )
+			sendMsgToDiscord( json )
+		end, 
+	{})
 end
 
 function playerSpawnForTheFirstTime(ply, transit)
@@ -67,10 +78,12 @@ function playerDisconnected(ply)
 end
 
 function playersCount()
-	if (#player.GetAll() != 0) then
+	local count = #player.GetAll()
+
+	if (count != 0) then
 
 		local embed = {
-			title = "Игроков на сервере: " .. tostring(#player.GetAll()),
+			title = "Игроков на сервере " .. tostring(count),
 			color = GM_IRC.PlayersCountColor
 		}
 

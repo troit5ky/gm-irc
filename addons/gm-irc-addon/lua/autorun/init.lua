@@ -15,7 +15,7 @@ if SERVER then
 	hook.Add("Initialize", "irc_serverstarted", function () 
 		local embed = {
 			title = "Сервер запущен!",
-			description = "Можешь смело подключаться :)",
+			description = "Карта сейчас - " .. game.GetMap(),
 			color = GM_IRC.PlayersCountColor
 		}
 
