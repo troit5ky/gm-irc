@@ -1,14 +1,14 @@
 require("chttp")
 
-function onFailure(message)
+local function onFailure(message)
 	print("-------------\nSEND failure\n-------------\n"..message)	
 end
 
-function sendMsgToDiscord( body )
+local function sendMsgToDiscord( body )
 	CHTTP( { failed = onFailure, succes = nil, method = "POST", url = GM_IRC.WebhookAdress, body = body, type = "application/json" } )
 end
 
-function sendPost(sender, text)
+local function sendPost(sender, text)
 	http.Fetch(
 		"http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=" .. GM_IRC.SteamapiKey .. "&steamids=" .. sender:SteamID64(), 
 		
@@ -38,7 +38,7 @@ function sendPost(sender, text)
 	return
 end
 
-function playerSpawnForTheFirstTime(ply, transit)
+local function playerSpawnForTheFirstTime(ply, transit)
 	local embed = {
 		title = "Игрок " .. ply:GetName() .." (".. ply:SteamID() .. ") подключился к серверу",
 		color = 4915018
@@ -66,7 +66,7 @@ function playerConnect(ply, ip)
 	sendMsgToDiscord( json )
 end
 
-function playerDisconnected(ply)
+local function playerDisconnected(ply)
 	local embed = {
 		title = "Игрок " .. ply.name .." (".. ply.networkid .. ") отключился от сервера (" .. ply.reason .. ")",
 		color = 16730698
@@ -79,7 +79,7 @@ function playerDisconnected(ply)
 	sendMsgToDiscord( json )
 end
 
-function playersCount()
+local function playersCount()
 	local count = #player.GetAll()
 
 	if (count != 0) then
