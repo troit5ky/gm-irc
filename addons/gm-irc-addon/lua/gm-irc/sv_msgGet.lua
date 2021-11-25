@@ -7,13 +7,13 @@ function poll()
 		GM_IRC.WebserverAdress .. '/getmsghistory',
 		function(body, size, headers, code)
 			local msgtble = util.JSONToTable(tostring(body))
+			
+			if body == "null" then print("[relay] DISCORD API ERROR")  return end
 
 			for i, msg in ipairs(msgtble) do
 				if ( msg.isbot ) then return end
 				if ( os.time()-10 > msg.timestamp+GM_IRC.GetmsgsDelay+30 ) then return end
-				for i,k in ipairs(printed) do
-					if ( msg.content == k.content ) then return end
-				end
+				if ( printed[msg.content] ) then return end
 				
 				print(GM_IRC.ChatPrefix .. " " .. msg.author .. ": " .. msg.content)
 
@@ -22,8 +22,8 @@ function poll()
 				net.WriteTable(msg)
 				net.Broadcast()
 
-				if ( table.getn(printed) ) == 10 then table.remove(printed, 1) end
-				table.insert(printed, msg)
+				if ( table.getn(printed) ) >= 10 then table.remove(printed, 1) end
+				printed[msg.content] = true
 			end
 
 		end,
