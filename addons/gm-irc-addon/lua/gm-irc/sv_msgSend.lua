@@ -4,7 +4,7 @@ local function onFailure(message)
 	print("-------------\nSEND failure\n-------------\n"..message)	
 end
 
-local function sendMsgToDiscord( body )
+function sendMsgToDiscord( body )
 	CHTTP( { failed = onFailure, succes = nil, method = "POST", url = GM_IRC.WebhookAdress, body = body, type = "application/json" } )
 end
 
