@@ -1,5 +1,7 @@
 require("chttp")
 
+local tempAvatars = tempAvatars or {}
+
 local function onFailure(message)
 	print("-------------\nSEND failure\n-------------\n"..message)	
 end
@@ -9,19 +11,34 @@ function sendMsgToDiscord( body )
 end
 
 local function sendPost(sender, text)
+	if tempAvatars[ sender:SteamID() ] then 
+		local json = {
+			["username"] = sender:Nick(),
+			["content"] = text,
+			["avatar_url"] = tempAvatars[ sender:SteamID() ]
+		}
+
+		json = util.TableToJSON(json)
+		sendMsgToDiscord( json )
+		return
+	end
+
 	http.Fetch(
 		"http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=" .. GM_IRC.SteamapiKey .. "&steamids=" .. sender:SteamID64(), 
 		
 		function ( body, length, headers, code  )
 		local user = util.JSONToTable(body)
-		local avatar = user.response.players[1].avatarfull or nil
-
-		if ( avatar == nil ) then print("-------------\nSTEAM API failure\n-------------\n" .. body) end
+		if ( user == nil ) then
+			print("-------------\nSTEAM API failure\n-------------\n" .. body)
+		else 
+			tempAvatars[ sender:SteamID() ] = user.response.players[1].avatarfull
+			print("[gm-irc]", sender, "avatar cached!")
+		end
 
 		local json = {
 			["username"] = sender:Nick(),
 			["content"] = text,
-			["avatar_url"] = avatar
+			["avatar_url"] = tempAvatars[ sender:SteamID() ] or nil
 		}
 
 		json = util.TableToJSON(json)
@@ -67,6 +84,12 @@ function playerConnect(ply, ip)
 end
 
 local function playerDisconnected(ply)
+	--Удаляем авы их кэша
+	if tempAvatars[ ply:SteamID() ] then 
+		table.RemoveByValue(tempAvatars, ply:SteamID())
+		print("[gm-irc]", sender, "avatar uncached!")
+	end
+
 	local embed = {
 		title = "Игрок " .. ply.name .." (".. ply.networkid .. ") отключился от сервера (" .. ply.reason .. ")",
 		color = 16730698
