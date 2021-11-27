@@ -85,9 +85,11 @@ end
 
 local function playerDisconnected(ply)
 	--Удаляем авы их кэша
-	if tempAvatars[ ply:SteamID() ] then 
-		table.RemoveByValue(tempAvatars, ply:SteamID())
-		print("[gm-irc]", sender, "avatar uncached!")
+	if IsValid( ply:SteamID() ) then 
+		if tempAvatars[ ply:SteamID() ] then 
+			table.RemoveByValue(tempAvatars, ply:SteamID())
+			print("[gm-irc]", sender, "avatar uncached!")
+		end
 	end
 
 	local embed = {
