@@ -10,11 +10,11 @@ function poll()
 			
 			if body == "null" then print("[relay] DISCORD API ERROR")  return end
 
-			msgtble = table.Reverse(msgtble)
+			--msgtble = table.Reverse(msgtble)
 
 			for i, msg in ipairs(msgtble) do
 				if not msg.isbot then
-					if ( os.time()-10 > msg.timestamp+GM_IRC.GetmsgsDelay+30 ) then return end
+					if ( os.time() > msg.timestamp+GM_IRC.GetmsgsDelay+30 ) then return end
 					if ( printed[msg.content] ) then return end
 					
 					print(GM_IRC.ChatPrefix .. " " .. msg.author .. ": " .. msg.content)
