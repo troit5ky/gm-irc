@@ -11,6 +11,8 @@ function sendMsgToDiscord( body )
 end
 
 local function sendPost(sender, text)
+	text = string.Replace(text, "@", "@ ") -- anti @everyone/@here
+
 	if tempAvatars[ sender:SteamID() ] then 
 		local json = {
 			["username"] = sender:Nick(),
@@ -87,7 +89,7 @@ local function playerDisconnected(ply)
 	--Удаляем авы их кэша
 	if tempAvatars[ ply.networkid ] then 
 		table.RemoveByValue(tempAvatars, ply.networkid)
-		print("[gm-irc]", sender, "avatar uncached!")
+		print("[gm-irc]", ply.name, "avatar uncached!")
 	end
 
 	local embed = {
