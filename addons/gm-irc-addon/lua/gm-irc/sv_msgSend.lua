@@ -11,13 +11,14 @@ function sendMsgToDiscord( body )
 end
 
 local function sendPost(sender, text)
-	text = string.Replace(text, "@", "@ ") -- anti @everyone/@here
-
 	if tempAvatars[ sender:SteamID() ] then 
 		local json = {
 			["username"] = sender:Nick(),
 			["content"] = text,
-			["avatar_url"] = tempAvatars[ sender:SteamID() ]
+			["avatar_url"] = tempAvatars[ sender:SteamID() ],
+			["allowed_mentions"] = {
+				["parse"] = {}
+			},
 		}
 
 		json = util.TableToJSON(json)
@@ -40,7 +41,10 @@ local function sendPost(sender, text)
 		local json = {
 			["username"] = sender:Nick(),
 			["content"] = text,
-			["avatar_url"] = tempAvatars[ sender:SteamID() ] or nil
+			["avatar_url"] = tempAvatars[ sender:SteamID() ] or nil,
+			["allowed_mentions"] = {
+				["parse"] = {}
+			},
 		}
 
 		json = util.TableToJSON(json)
