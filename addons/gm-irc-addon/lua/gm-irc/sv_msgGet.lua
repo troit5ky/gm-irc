@@ -1,36 +1,37 @@
 util.AddNetworkString("SendMsg")
 
-local printed = {}
+local printed = printed or {}
 
 function poll()
-	http.Fetch(
-		GM_IRC.WebserverAdress .. '/getmsghistory',
-		function(body, size, headers, code)
-			local msgtble = util.JSONToTable(tostring(body))
-			
-			if body == "null" then print("[relay] DISCORD API ERROR")  return end
+	http.Fetch(GM_IRC.WebserverAdress .. '/getmsghistory',
 
-			msgtble = table.Reverse(msgtble)
+	function(body, size, headers, code)
+		local msgtble = util.JSONToTable(tostring(body))
 
-			for i, msg in ipairs(msgtble) do
-				if not msg.isbot and os.time() < msg.timestamp+GM_IRC.GetmsgsDelay+10 and not printed[msg.content] then
-					print(GM_IRC.ChatPrefix .. " " .. msg.author .. ": " .. msg.content)
+		if body == "null" then print("[relay]", "DISCORD API ERROR")  return end
 
-					net.Start("SendMsg")
-					msg.pref = GM_IRC.ChatPrefix .. " "
-					net.WriteTable(msg)
-					net.Broadcast()
+		msgtble = table.Reverse(msgtble)
 
-					if ( table.getn(printed) ) >= 10 then table.remove(printed, 1) end
-					printed[msg.content] = true
-				end
+		for _, msg in ipairs(msgtble) do
+			if not msg.isbot and os.time() < msg.timestamp+GM_IRC.GetmsgsDelay+10 and not printed[msg.content] then
+				print(GM_IRC.ChatPrefix .. " " .. msg.author .. ": " .. msg.content)
+
+				net.Start("SendMsg")
+				msg.pref = GM_IRC.ChatPrefix .. " "
+				net.WriteTable(msg)
+				net.Broadcast()
+
+				printed[msg.content] = true
+				timer.Simple(GM_IRC.GetmsgsDelay+10, function () 
+					printed[msg.content] = nil
+				end)
 			end
-		end,
-			
-		function( err )
-			print( "FAILED GET: " .. err )
 		end
-	)
+	end,
+			
+	function( err )
+		print( "FAILED GET: " .. err )
+	end)
 end
 	
 timer.Create("discordhttptimer", GM_IRC.GetmsgsDelay, 0, poll)

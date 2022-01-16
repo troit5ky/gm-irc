@@ -91,8 +91,8 @@ end
 
 local function playerDisconnected(ply)
 	--Удаляем авы их кэша
-	if tempAvatars[ ply.networkid ] then 
-		table.RemoveByValue(tempAvatars, ply.networkid)
+	if tempAvatars[ ply.networkid ] then
+		tempAvatars[ply.networkid] = nil
 		print("[gm-irc]", ply.name, "avatar uncached!")
 	end
 

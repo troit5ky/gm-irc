@@ -1,6 +1,6 @@
-GM_IRC = {}
-
 if SERVER then 
+	GM_IRC = {}
+	
 	include( "sv_config.lua" )
 
 	include( "gm-irc/sv_msgGet.lua" )
