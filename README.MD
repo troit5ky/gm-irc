@@ -1,3 +1,5 @@
+# SUPPORT WAS ENDED! USE - [Discord Relay](https://github.com/testeron211/discord-relay)
+
 ## gm-irc
 IRC Discord < == > Garrys Mod
 
